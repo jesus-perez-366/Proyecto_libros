@@ -26,4 +26,4 @@ Imagen
 
 Imagen 
 
-<img src=imagen/insertar_categorias.png width="900">
+<img src=imagen/insertar_categoria.jpg width="900">
