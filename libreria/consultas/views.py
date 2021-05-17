@@ -3,8 +3,8 @@ from django.shortcuts import render
 from consultas import models as bd
 import pandas as pd
 
-def actualizar():
-    libros = bd.libro.objects.all()
+def actualizar(libros):
+    # libros = bd.libro.objects.all()
     df_libros=pd.DataFrame()
     for l2 in libros:
         l3=str(l2.categoria).split('-')
@@ -19,7 +19,8 @@ def actualizar():
 
 def inicio(request):
 
-    df_libros=actualizar()
+    libros = bd.libro.objects.all()
+    df_libros=actualizar(libros)
     categorias = bd.categoria.objects.all()
     if request.method == 'POST' :
         # print(dict(request.POST.items()))
@@ -33,26 +34,29 @@ def inicio(request):
             l.categoria=cat
             l.portada=request.POST.get('portada')
             l.save()
-            df_libros=actualizar()
+            libros = bd.libro.objects.all()
+            df_libros=actualizar(libros)
 
         if request.POST.get('accion')=='BORRAR':
             l=bd.libro.objects.get(id=request.POST.get('id'))
             l.delete()
-            df_libros=actualizar()
+            libros = bd.libro.objects.all()
+            df_libros=actualizar(libros)
         
         if request.POST.get('accion')=='buscar':
             if request.POST.get('filtro')=='sin filtrar':
                 l=bd.libro.objects.filter(titulo__contains=request.POST.get('buscador'))
                 libros=l
-                df_libros=actualizar()
+                df_libros=actualizar(libros)
             else:
                 print('entro')
-                # l=bd.libro.objects.filter(titulo__contains=request.POST.get('buscador'))
+                l=bd.libro.objects.filter(titulo__contains=request.POST.get('buscador'))
                 l=bd.libro.objects.filter(categoria__contains=request.POST.get('filtro'))
-                print(request.POST.get('filtro'))
                 l=l.filter(titulo__contains=request.POST.get('buscador'))
                 libros=l
-                df_libros=actualizar()
+
+                df_libros=actualizar(libros)
+                print(df_libros)
             
 
    
